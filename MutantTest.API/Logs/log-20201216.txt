@@ -1,0 +1,4 @@
+2020-12-16T17:09:18.1519973-03:00  [INF] Now listening on: "http://localhost:5000" (d826f4b8)
+2020-12-16T17:09:18.1680091-03:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2020-12-16T17:09:18.1721273-03:00  [INF] Hosting environment: "Development" (c3307c92)
+2020-12-16T17:09:18.1760363-03:00  [INF] Content root path: "C:\projects\teste_mutant\MutantTest\MutantTest.API" (b5d60022)
