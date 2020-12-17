@@ -31,10 +31,19 @@ namespace MutantTest.API.Controllers
         [HttpGet("download")]
         public async Task<IActionResult> GetUsers()
         {
-            string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");
+            try
+            {
+                string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");
+
+                _logger.LogInformation("Lista usuarios recuperada com sucesso.");
+                return Content(result, "application/json");
+            }
+            catch(Exception err)
+            {
+                _logger.LogError(err.Message);
+                return Problem(err.Message);
+            }
             
-            _logger.LogInformation("Lista usuarios recuperada com sucesso.");
-            return Content(result, "application/json");
         }
 
         /// <summary>
@@ -45,11 +54,20 @@ namespace MutantTest.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<IEnumerable<UserInfo>>> SaveUsers()
         {
-            string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");
-            var userInfoList = JsonConvert.DeserializeObject<List<UserForm>>(result);
-            
+            try
+            {
+                string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");                
+                var userInfoList = JsonConvert.DeserializeObject<List<UserForm>>(result);
 
-            return Created(string.Empty, userInfoList.Select(u => u.ToUserInfo()));
+                return Created(string.Empty, userInfoList.Select(u => u.ToUserInfo()));
+            }
+            catch(Exception err)
+            {
+                _logger.LogError(err.Message);
+                return Problem(err.Message);
+            }
+
+            
         }
 
     }

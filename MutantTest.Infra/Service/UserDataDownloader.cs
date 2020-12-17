@@ -12,11 +12,18 @@ namespace MutantTest.Infra.Service
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(endpoint))
-                {                    
-                    string responseText = await response.Content.ReadAsStringAsync();
-                    return responseText;
+                try
+                {
+                    using (var response = await httpClient.GetAsync(endpoint))
+                    {
+                        string responseText = await response.Content.ReadAsStringAsync();
+                        return responseText;
+                    }
                 }
+                catch
+                {
+                    throw;
+                }                
             }
         }
     }
