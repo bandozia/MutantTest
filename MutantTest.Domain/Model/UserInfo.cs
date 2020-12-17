@@ -5,7 +5,7 @@ using System.Text;
 namespace MutantTest.Domain.Model
 {
     public class UserInfo : BaseModel
-    {
+    {        
         public int SourceId { get; set; }
         public string Name { get; set; }
         public string Username { get; set; }
@@ -13,5 +13,6 @@ namespace MutantTest.Domain.Model
         
         public Address Address { get; set; }
         public Contact Contact { get; set; }
+                                
     }
 }
