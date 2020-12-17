@@ -8,14 +8,14 @@ namespace MutantTest.Infra.Service
 {
     public class UserDataDownloader : IUserDataDownloader
     {
-        public async Task DownloadUserData()
+        public async Task<string> DownloadUserData(string endpoint)
         {
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync("https://localhost:1234"))
+                using (var response = await httpClient.GetAsync(endpoint))
                 {
                     string responseText = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(responseText);
+                    return responseText;
                 }
             }
         }

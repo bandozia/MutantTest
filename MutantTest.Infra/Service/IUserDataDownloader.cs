@@ -7,6 +7,6 @@ namespace MutantTest.Infra.Service
 {
     public interface IUserDataDownloader
     {
-        Task DownloadUserData();
+        Task<string> DownloadUserData(string endpoint);
     }
 }

@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using MutantTest.Domain.Model;
 
 namespace MutantTest.API.Controllers
 {
@@ -22,13 +24,14 @@ namespace MutantTest.API.Controllers
         }
 
         /// <summary>
-        /// Irá Baixar todos os dados em https://jsonplaceholder.typicode.com/users
+        /// Irá Baixar todos os dados em https://jsonplaceholder.typicode.com/users sem nenhum parsing.
         /// </summary>        
         [HttpGet("download")]
         public async Task<IActionResult> GetUsers()
         {
-            await _userDataDownloader.DownloadUserData();            
-            return Ok("users");
+            string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");
+            var userInfoList = JsonConvert.DeserializeObject<List<UserInfo>>(result);            
+            return Content(result, "application/json");
         }
     }
 }
