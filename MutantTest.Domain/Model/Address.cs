@@ -11,6 +11,8 @@ namespace MutantTest.Domain.Model
         public string City { get; set; }
         public string Zipcode { get; set; }
         public Geo Geo { get; set; }
+                
+        public UserInfo UserInfo { get; set; }
 
         public bool IsSuite => Suite.ToLower().Trim().StartsWith("suite");
         

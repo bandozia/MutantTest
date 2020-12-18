@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MutantTest.Infra.Repository
+namespace MutantTest.Infra.Service
 {
-    public interface IUserRepository
+    public interface IUserDataService
     {
-        Task InsertUserList(IEnumerable<UserInfo> userList);
+        Task SaveUserData(IEnumerable<UserInfo> userInfoList);
     }
 }

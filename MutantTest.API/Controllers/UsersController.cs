@@ -18,11 +18,13 @@ namespace MutantTest.API.Controllers
     {
         private readonly ILogger<UsersController> _logger;
         private readonly IUserDataDownloader _userDataDownloader;
+        private readonly IUserDataService _userDataService;
 
-        public UsersController(ILogger<UsersController> logger, IUserDataDownloader userDataDownloader)
+        public UsersController(ILogger<UsersController> logger, IUserDataDownloader userDataDownloader, IUserDataService userDataService)
         {
             _logger = logger;
             _userDataDownloader = userDataDownloader;
+            _userDataService = userDataService;
         }
 
         /// <summary>
@@ -57,9 +59,11 @@ namespace MutantTest.API.Controllers
             try
             {
                 string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");                
-                var userInfoList = JsonConvert.DeserializeObject<List<UserForm>>(result);
+                var userFormList = JsonConvert.DeserializeObject<List<UserForm>>(result);
 
-                return Created(string.Empty, userInfoList.Select(u => u.ToUserInfo()));
+                await _userDataService.SaveUserData(userFormList.Select(u => u.ToUserInfo()));
+                //TODO: resolver dependencia ciclica no json
+                return Created(string.Empty, userFormList.Select(u => u.ToUserInfo()));
             }
             catch(Exception err)
             {

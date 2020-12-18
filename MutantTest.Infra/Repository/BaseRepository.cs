@@ -8,10 +8,10 @@ namespace MutantTest.Infra.Repository
 {
     public abstract class BaseRepository<T> where T : BaseModel
     {
-        protected readonly AppContext context;
+        protected readonly CoreContext context;
         protected readonly DbSet<T> dbSet;
 
-        public BaseRepository(AppContext context)
+        public BaseRepository(CoreContext context)
         {
             this.context = context;
             dbSet = context.Set<T>();

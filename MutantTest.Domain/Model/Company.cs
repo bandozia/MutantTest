@@ -9,6 +9,8 @@ namespace MutantTest.Domain.Model
         public string Name { get; set; }
         public string CatchPhrase { get; set; }
         public string Bs { get; set; }
+        
+        public ICollection<Contact> Contacts { get; set; }
 
         public Company()
         {

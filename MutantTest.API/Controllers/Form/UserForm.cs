@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace MutantTest.API.Controllers.Form
 {
     public class UserForm
-    {
+    {   
         public int id { get; set; }
         public string name { get; set; }
         public string username { get; set; }        

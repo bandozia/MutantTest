@@ -8,14 +8,14 @@ namespace MutantTest.Infra.Repository
 {
     public class UserRepository : BaseRepository<UserInfo>, IUserRepository
     {
-        public UserRepository(AppContext context) : base(context)
+        public UserRepository(CoreContext context) : base(context)
         {
         }
 
-        public Task SaveUserList(IEnumerable<UserInfo> userList)
+        public async Task InsertUserList(IEnumerable<UserInfo> userList)
         {
-            
-            throw new NotImplementedException();
+            dbSet.AddRange(userList);
+            await context.SaveChangesAsync();
         }
     }
 }

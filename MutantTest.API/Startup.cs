@@ -12,7 +12,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using MutantTest.Infra.Service;
-
+using Microsoft.EntityFrameworkCore;
+using MutantTest.Infra.Repository;
 
 namespace MutantTest.API
 {
@@ -33,13 +34,17 @@ namespace MutantTest.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 s.IncludeXmlComments(xmlPath);
             });
-
+            
+            services.AddDbContext<CoreContext>(options => options.UseMySql(Configuration.GetConnectionString("Core")));
             services.AddScoped<IUserDataDownloader, UserDataDownloader>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserDataService, UserDataService>();
         }
                 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, CoreContext coreContext)
         {
             loggerFactory.AddFile($"{Directory.GetCurrentDirectory()}/Logs/log.txt");
+            coreContext.Database.EnsureCreated();
 
             if (env.IsDevelopment())
             {
