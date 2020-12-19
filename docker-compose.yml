@@ -7,18 +7,15 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "ultrasecreto"
-      MYSQL_DATABASE: "mutant_test_db"
-      MYSQL_USER: "test_user"
-      MYSQL_PASSWORD: "supersecreto"
-      MYSQL_ROOT_HOST: "%"
-    ports:
-      - 3306:3306
+      MYSQL_DATABASE: "mutant_test_db"          
 
   mutanttest.api:
     image: ${DOCKER_REGISTRY-}mutanttestapi
     build:
       context: .
-      dockerfile: MutantTest.API/Dockerfile
+      dockerfile: MutantTest.API/Dockerfile    
+    volumes:
+      - ./Logs:/app/Logs
     ports:
       - 80:80
     depends_on:

@@ -1,6 +1,7 @@
 ﻿using MutantTest.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,8 @@ namespace MutantTest.API.Controllers.Dto
     public class AddressDTO
     {
         public string street { get; set; }
+
+        [Required]
         public string suite { get; set; }
         public string city { get; set; }
         public string zipcode { get; set; }

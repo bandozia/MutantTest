@@ -32,7 +32,7 @@ namespace MutantTest.API.Controllers
         /// Irá recuperar todos os dados em https://jsonplaceholder.typicode.com/users
         /// </summary>        
         [HttpGet("download")]
-        public async Task<ActionResult> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserInfoDTO>>> GetUsers()
         {
             try
             {   
@@ -52,18 +52,23 @@ namespace MutantTest.API.Controllers
         /// <summary>
         /// Insere todos os dados válidos que ainda não estão presentes no banco.
         /// </summary>
-        /// <response code="201">Lista com os items que foram inseridos</response>
+        /// <response code="201">Lista com os items que foram inseridos.</response>
+        /// <response code="409">Nenhum dos items foi inserido. Possivelmente todos duplicados.</response>
         [HttpPost("save")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> SaveUsers()
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<IEnumerable<UserInfoDTO>>> SaveUsers()
         {
             try
             {                
                 var userFormList = await _dataDownload.DownloadUserInfo("https://jsonplaceholder.typicode.com/users");
                 var successList = await _userDataService.SaveUserData(userFormList.Select(u => u.ToUserInfo()));
-                //TODO: remover o entity do log padrao e inserir de forma mais amigavel
 
-                return Created(string.Empty, successList.Select(u => new UserInfoDTO(u)));
+                if (successList.Count() > 0)
+                    return Created(string.Empty, successList.Select(u => new UserInfoDTO(u)));
+                else
+                    return Conflict("Nenhum item adcionado");
+                
             }
             catch(Exception err)
             {                

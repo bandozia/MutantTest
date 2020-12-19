@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MutantTest.Domain.Model;
 using MySql.Data.MySqlClient;
 using System;
@@ -10,8 +11,11 @@ namespace MutantTest.Infra.Repository
 {
     public class UserRepository : BaseRepository<UserInfo>, IUserRepository
     {
-        public UserRepository(CoreContext context) : base(context)
+        private readonly ILogger<UserRepository> _logger;
+
+        public UserRepository(CoreContext context, ILogger<UserRepository> logger) : base(context)
         {
+            _logger = logger;
         }
 
         public async Task<IEnumerable<UserInfo>> InsertUserList(IEnumerable<UserInfo> userList)
@@ -26,20 +30,27 @@ namespace MutantTest.Infra.Repository
                         dbSet.Add(user);
                         context.SaveChanges();
                         successList.Add(user);
+                        _logger.LogInformation($"Novo usuario inserido: {user.Email}");
                     }
-                    catch
-                    {
+                    catch (DbUpdateException ex) when ((ex.InnerException as MySqlException).Number == 1062)
+                    {   
+                        _logger.LogWarning($"Tentativa de inserir duplicata: {user.Email}");
                         continue;
                     }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Erro ao inserir nova entrada: {ex.InnerException.Message}");
+                        continue;
+                    }                    
                 }
 
                 try
                 {  
                     await transaction.CommitAsync();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    Console.WriteLine("deu merda");
+                    _logger.LogError($"Falha na transacao: {ex.Message}");
                 }                             
             }
 

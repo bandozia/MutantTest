@@ -39,7 +39,12 @@ namespace MutantTest.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 s.IncludeXmlComments(xmlPath);
             });
-            
+
+            services.AddLogging(builder => {
+                builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Critical);
+                builder.AddFilter("Microsoft", LogLevel.Error);
+            });
+
             services.AddDbContext<CoreContext>(options => options.UseMySql(Configuration.GetConnectionString("Core")));
             services.AddHttpClient<IDataDownloadService, DataDownloadService>();                        
             services.AddScoped<IUserRepository, UserRepository>();
@@ -49,6 +54,7 @@ namespace MutantTest.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, CoreContext coreContext)
         {
             loggerFactory.AddFile($"{Directory.GetCurrentDirectory()}/Logs/log.txt");
+            
             coreContext.Database.EnsureCreated();
 
             if (env.IsDevelopment())
@@ -60,8 +66,7 @@ namespace MutantTest.API
             }
 
             app.UseRouting();
-            //app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

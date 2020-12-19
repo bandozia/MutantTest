@@ -1,6 +1,7 @@
 ﻿using MutantTest.Domain.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace MutantTest.API.Controllers.Dto
         public int id { get; set; }
         public string name { get; set; }
         public string username { get; set; }
+
+        [Required]
         public string email { get; set; }
         public AddressDTO address { get; set; }
         public string phone { get; set; }

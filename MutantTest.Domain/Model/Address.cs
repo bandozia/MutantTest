@@ -14,7 +14,7 @@ namespace MutantTest.Domain.Model
                 
         public UserInfo UserInfo { get; set; }
 
-        public bool IsSuite => Suite.ToLower().Trim().StartsWith("suite");
+        public bool IsSuite => Suite.ToLower().Trim().Contains("suite");
         
     }
 }
