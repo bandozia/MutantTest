@@ -8,6 +8,6 @@ namespace MutantTest.Infra.Service
 {
     public interface IUserDataService
     {
-        Task SaveUserData(IEnumerable<UserInfo> userInfoList);
+        Task<IEnumerable<UserInfo>> SaveUserData(IEnumerable<UserInfo> userInfoList);
     }
 }

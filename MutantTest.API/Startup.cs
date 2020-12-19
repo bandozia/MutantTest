@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using MutantTest.Infra.Service;
 using Microsoft.EntityFrameworkCore;
 using MutantTest.Infra.Repository;
+using MutantTest.API.Service;
 
 namespace MutantTest.API
 {
@@ -28,7 +29,11 @@ namespace MutantTest.API
                 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(config => 
+            {
+                config.JsonSerializerOptions.WriteIndented = true;                               
+            });
+
             services.AddSwaggerGen(s => {
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -36,7 +41,7 @@ namespace MutantTest.API
             });
             
             services.AddDbContext<CoreContext>(options => options.UseMySql(Configuration.GetConnectionString("Core")));
-            services.AddScoped<IUserDataDownloader, UserDataDownloader>();
+            services.AddHttpClient<IDataDownloadService, DataDownloadService>();                        
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserDataService, UserDataService>();
         }

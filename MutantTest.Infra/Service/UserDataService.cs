@@ -2,6 +2,7 @@
 using MutantTest.Infra.Repository;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,9 +17,9 @@ namespace MutantTest.Infra.Service
             _userRepository = userRepository;
         }
 
-        public async Task SaveUserData(IEnumerable<UserInfo> userInfoList)
-        {
-            await _userRepository.InsertUserList(userInfoList);
+        public async Task<IEnumerable<UserInfo>> SaveUserData(IEnumerable<UserInfo> userInfoList)
+        {            
+            return await _userRepository.InsertUserList(userInfoList.Where(u => u.Address.IsSuite));
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using MutantTest.Domain.Model;
+﻿using Microsoft.EntityFrameworkCore;
+using MutantTest.Domain.Model;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +14,36 @@ namespace MutantTest.Infra.Repository
         {
         }
 
-        public async Task InsertUserList(IEnumerable<UserInfo> userList)
+        public async Task<IEnumerable<UserInfo>> InsertUserList(IEnumerable<UserInfo> userList)
         {
-            dbSet.AddRange(userList);
-            await context.SaveChangesAsync();
+            List<UserInfo> successList = new List<UserInfo>();            
+            using (var transaction = await context.Database.BeginTransactionAsync())
+            {
+                foreach (var user in userList)
+                {
+                    try
+                    {
+                        dbSet.Add(user);
+                        context.SaveChanges();
+                        successList.Add(user);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+
+                try
+                {  
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    Console.WriteLine("deu merda");
+                }                             
+            }
+
+            return successList;
         }
     }
 }

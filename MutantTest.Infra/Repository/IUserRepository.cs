@@ -8,6 +8,6 @@ namespace MutantTest.Infra.Repository
 {
     public interface IUserRepository
     {
-        Task InsertUserList(IEnumerable<UserInfo> userList);
+        Task<IEnumerable<UserInfo>> InsertUserList(IEnumerable<UserInfo> userList);
     }
 }

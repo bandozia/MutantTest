@@ -7,8 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using MutantTest.Domain.Model;
-using MutantTest.API.Controllers.Form;
+using MutantTest.API.Controllers.Dto;
 using Microsoft.AspNetCore.Http;
+using MutantTest.API.Service;
 
 namespace MutantTest.API.Controllers
 {
@@ -17,30 +18,30 @@ namespace MutantTest.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
-        private readonly IUserDataDownloader _userDataDownloader;
         private readonly IUserDataService _userDataService;
+        private readonly IDataDownloadService _dataDownload;
 
-        public UsersController(ILogger<UsersController> logger, IUserDataDownloader userDataDownloader, IUserDataService userDataService)
+        public UsersController(ILogger<UsersController> logger, IUserDataService userDataService, IDataDownloadService dataDownload)
         {
-            _logger = logger;
-            _userDataDownloader = userDataDownloader;
+            _logger = logger;            
             _userDataService = userDataService;
+            _dataDownload = dataDownload;
         }
 
         /// <summary>
-        /// Irá Baixar todos os dados em https://jsonplaceholder.typicode.com/users sem nenhum parsing.
+        /// Irá recuperar todos os dados em https://jsonplaceholder.typicode.com/users
         /// </summary>        
         [HttpGet("download")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<ActionResult> GetUsers()
         {
             try
-            {
-                string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");
-
+            {   
+                var userList = await _dataDownload.DownloadUserInfo("https://jsonplaceholder.typicode.com/users");
                 _logger.LogInformation("Lista usuarios recuperada com sucesso.");
-                return Content(result, "application/json");
+
+                return Ok(userList);
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 _logger.LogError(err.Message);
                 return Problem(err.Message);
@@ -54,24 +55,21 @@ namespace MutantTest.API.Controllers
         /// <response code="201">Lista com os items que foram inseridos</response>
         [HttpPost("save")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<IEnumerable<UserInfo>>> SaveUsers()
+        public async Task<ActionResult> SaveUsers()
         {
             try
-            {
-                string result = await _userDataDownloader.DownloadUserData("https://jsonplaceholder.typicode.com/users");                
-                var userFormList = JsonConvert.DeserializeObject<List<UserForm>>(result);
+            {                
+                var userFormList = await _dataDownload.DownloadUserInfo("https://jsonplaceholder.typicode.com/users");
+                var successList = await _userDataService.SaveUserData(userFormList.Select(u => u.ToUserInfo()));
+                //TODO: remover o entity do log padrao e inserir de forma mais amigavel
 
-                await _userDataService.SaveUserData(userFormList.Select(u => u.ToUserInfo()));
-                //TODO: resolver dependencia ciclica no json
-                return Created(string.Empty, userFormList.Select(u => u.ToUserInfo()));
+                return Created(string.Empty, successList.Select(u => new UserInfoDTO(u)));
             }
             catch(Exception err)
-            {
+            {                
                 _logger.LogError(err.Message);
                 return Problem(err.Message);
             }
-
-            
         }
 
     }
