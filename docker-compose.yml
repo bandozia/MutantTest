@@ -3,12 +3,26 @@ version: '3.4'
 services:
 
   database:
-    image: mysql
+    image: mysql:8
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "ultrasecreto"
-      MYSQL_DATABASE: "mutant_test_db"          
+      MYSQL_DATABASE: "mutant_test_db"
 
+  elasticsearch:
+      image: elasticsearch:7.10.1
+      environment:
+        discovery.type: "single-node"      
+  
+  kibana:
+    image: kibana:7.10.1
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+        
   mutanttest.api:
     image: ${DOCKER_REGISTRY-}mutanttestapi
     build:

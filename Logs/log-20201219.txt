@@ -1,4 +1,0 @@
-2020-12-19T23:05:11.0720490+00:00  [INF] Now listening on: "http://[::]:80" (d826f4b8)
-2020-12-19T23:05:11.0821290+00:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
-2020-12-19T23:05:11.0861738+00:00  [INF] Hosting environment: "Development" (c3307c92)
-2020-12-19T23:05:11.0900302+00:00  [INF] Content root path: "/app" (b5d60022)

@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using MutantTest.Domain.Model;
 using MutantTest.API.Controllers.Dto;
 using Microsoft.AspNetCore.Http;
 using MutantTest.API.Service;
@@ -63,7 +61,7 @@ namespace MutantTest.API.Controllers
             {                
                 var userFormList = await _dataDownload.DownloadUserInfo("https://jsonplaceholder.typicode.com/users");
                 var successList = await _userDataService.SaveUserData(userFormList.Select(u => u.ToUserInfo()));
-
+                                
                 if (successList.Count() > 0)
                     return Created(string.Empty, successList.Select(u => new UserInfoDTO(u)));
                 else

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MutantTest.Domain.Model
+﻿namespace MutantTest.Domain.Model
 {
     public class Contact : BaseModel
     {

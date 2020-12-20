@@ -1,9 +1,7 @@
 ﻿using MutantTest.Domain.Model;
 using MutantTest.Infra.Repository;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MutantTest.Infra.Service

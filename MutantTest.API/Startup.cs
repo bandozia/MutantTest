@@ -1,20 +1,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using MutantTest.Infra.Service;
 using Microsoft.EntityFrameworkCore;
 using MutantTest.Infra.Repository;
 using MutantTest.API.Service;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
 
 namespace MutantTest.API
 {
@@ -23,6 +21,14 @@ namespace MutantTest.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://elasticsearch:9200"))
+                {
+                    AutoRegisterTemplate = true                    
+                })                
+                .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
@@ -42,7 +48,7 @@ namespace MutantTest.API
 
             services.AddLogging(builder => {
                 builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Critical);
-                builder.AddFilter("Microsoft", LogLevel.Error);
+                builder.AddFilter("Microsoft", LogLevel.Error);                
             });
 
             services.AddDbContext<CoreContext>(options => options.UseMySql(Configuration.GetConnectionString("Core")));
@@ -53,8 +59,10 @@ namespace MutantTest.API
                 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, CoreContext coreContext)
         {
-            loggerFactory.AddFile($"{Directory.GetCurrentDirectory()}/Logs/log.txt");
+            loggerFactory.AddSerilog()
+                .AddFile($"{Directory.GetCurrentDirectory()}/Logs/log.txt");
             
+                                                
             coreContext.Database.EnsureCreated();
 
             if (env.IsDevelopment())
