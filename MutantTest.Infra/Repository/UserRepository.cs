@@ -38,7 +38,7 @@ namespace MutantTest.Infra.Repository
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Erro ao inserir nova entrada: {ex.InnerException.Message}");
+                        _logger.LogError($"Erro ao inserir nova entrada: {ex.Message}");
                         continue;
                     }                    
                 }

@@ -1,10 +1,6 @@
 
 ## Para subir o aplicativo
-Os serviços estão containerzados e orquestrados com docker compose. Clone o repositório e na pasta raiz (onde está o arquivo docker-compose.yml) execute:
-
-```
-docker-compose up
-```
+Os serviços estão containerzados e orquestrados com docker compose. Clone o repositório e na pasta raiz (onde está o arquivo docker-compose.yml) e execute um "docker-compose up" com os parametros desejados ou utilize uma ferramenta de gerenciamento de containers. O yml não possui nenhum healthcheck, mas os containers da API e do banco de dados vão reiniciar caso falhem.
 
 obs: são containers linux.
 

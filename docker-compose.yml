@@ -25,6 +25,7 @@ services:
         
   mutanttest.api:
     image: ${DOCKER_REGISTRY-}mutanttestapi
+    restart: always
     build:
       context: .
       dockerfile: MutantTest.API/Dockerfile    

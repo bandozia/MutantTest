@@ -52,6 +52,7 @@ namespace MutantTest.API
             });
 
             services.AddDbContext<CoreContext>(options => options.UseMySql(Configuration.GetConnectionString("Core")));
+            
             services.AddHttpClient<IDataDownloadService, DataDownloadService>();                        
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserDataService, UserDataService>();
